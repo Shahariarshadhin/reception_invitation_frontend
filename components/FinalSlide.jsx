@@ -17,19 +17,19 @@ function BlossomBranch({ corner = "top-left", color = "#C6A15B" }) {
     corner === "top-right"
       ? "scaleX(-1)"
       : corner === "bottom-left"
-      ? "scaleY(-1)"
-      : corner === "bottom-right"
-      ? "scale(-1,-1)"
-      : "none";
+        ? "scaleY(-1)"
+        : corner === "bottom-right"
+          ? "scale(-1,-1)"
+          : "none";
 
   const positionClass =
     corner === "top-left"
       ? "top-0 left-0"
       : corner === "top-right"
-      ? "top-0 right-0"
-      : corner === "bottom-left"
-      ? "bottom-0 left-0"
-      : "bottom-0 right-0";
+        ? "top-0 right-0"
+        : corner === "bottom-left"
+          ? "bottom-0 left-0"
+          : "bottom-0 right-0";
 
   const blossoms = [
     { cx: 46, cy: 58, r: 5 },
@@ -115,7 +115,7 @@ function usePetals(count) {
           maxOpacity: 0.35 + Math.random() * 0.35,
         };
       }),
-    [count]
+    [count],
   );
 }
 
@@ -226,8 +226,10 @@ export default function FinalSlide() {
           <Heart size={30} fill="#C6A15B" color="#C6A15B" />
         </motion.div>
 
-        <h2 className="font-script text-5xl leading-tight text-gold-soft">
-          Turjo <span className="text-parchment/50">&amp;</span> Benazir
+        <h2 className="font-script text-4xl text-gold-soft">
+          <span className="block">Turjo</span>
+          <span className="block text-parchment/50 pt-3">&amp;</span>
+          <span className="block">Benazir</span>
         </h2>
 
         <p className="font-body mt-5 max-w-[260px] text-sm leading-relaxed text-parchment/70">

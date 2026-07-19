@@ -2,7 +2,7 @@ import "./globals.css";
 
 export const metadata = {
   title: "Turjo & Benazir | Reception Invite",
-  description: "Join us as we begin our forever — Akdh,Wedding & Reception.",
+  description: "Join us as we begin our forever — Wedding & Reception.",
 };
 
 export const viewport = {

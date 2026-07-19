@@ -142,7 +142,7 @@ export default function RSVPSlide() {
               onChange={update("guests")}
               className="font-body mt-1.5 w-full rounded-lg border border-gold/40 bg-white/70 px-3 py-2.5 text-[13px] outline-none focus:border-wine"
             >
-              {[1, 2, 3, 4].map((n) => (
+              {[1, 2, 3, 4,5,6].map((n) => (
                 <option key={n} value={n}>{n}</option>
               ))}
             </select>

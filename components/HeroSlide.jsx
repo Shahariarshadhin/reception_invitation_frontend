@@ -129,13 +129,13 @@ export default function HeroSlide({ scrollContainerRef }) {
           }}
         />
       </motion.div>
-      <div
+      {/* <div
         className="absolute inset-0"
         style={{
           background:
             "linear-gradient(180deg, rgba(51,37,31,0.55) 0%, rgba(51,37,31,0.05) 35%, rgba(51,37,31,0.15) 70%, rgba(51,37,31,0.75) 100%)",
         }}
-      />
+      /> */}
 
       {/* <div className="absolute inset-0 bg-black/70" />
 
@@ -155,13 +155,13 @@ export default function HeroSlide({ scrollContainerRef }) {
           className="eyebrow mt-[11vh] text-[#a72743]"
           style={{ fontFamily: "var(--font-label)" }}
         >
-          With Joyful Hearts, We Invite You
+          With joyful heart we invite you to the reception
         </p>
 
         <div className="w-full">
           <h1
             ref={groomRef}
-            className="font-display italic leading-none text-[#a72743]"
+            className="font-display italic leading-none text-[#60241E]"
             style={{ fontSize: "clamp(52px, 14vw, 72px)" }}
           >
             Turjo
@@ -169,7 +169,7 @@ export default function HeroSlide({ scrollContainerRef }) {
           <p className="font-body mt-2 text-[11.5px] leading-snug text-[#a72743]">
             Towhidul Islam Khan
             <br />
-            Son of Nargis Khan &amp; the Late Md Quayum Khan
+            Son of Late Md Quayum Khan &amp; Nargis Khan
           </p>
 
           <div
@@ -182,7 +182,7 @@ export default function HeroSlide({ scrollContainerRef }) {
 
           <h1
             ref={brideRef}
-            className="font-display italic leading-none text-[#a72743]"
+            className="font-display italic leading-none text-[#60241E]"
             style={{ fontSize: "clamp(52px, 14vw, 72px)" }}
           >
             Benazir
@@ -190,8 +190,8 @@ export default function HeroSlide({ scrollContainerRef }) {
           <p className="font-body mt-2 text-[11.5px] leading-snug text-[#a72743]">
             Syeda Benazir Hossain
             <br />
-            Daughter of Syeda Mocktary Begum &amp; the Late Syed Mohammad Azfar
-            Hossain
+            Daughter of Late Syed Mohammad Azfar
+            Hossain &amp;  Syeda Mocktary Begum 
           </p>
 
           <p className="eyebrow mt-4 text-[#a72743]">
