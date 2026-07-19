@@ -4,7 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import { motion } from "framer-motion";
 
 
-const TARGET = new Date("2026-07-24T19:00:00+06:00"); // Bangladesh Standard Time (UTC+6)
+const TARGET = new Date("2026-07-25T19:00:00+06:00"); // Bangladesh Standard Time (UTC+6)
 
 function Unit({ value, label }) {
   return (
