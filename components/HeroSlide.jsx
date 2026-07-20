@@ -3,12 +3,10 @@
 import { useEffect, useMemo, useRef } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import gsap from "gsap";
+import { ChevronDown } from "lucide-react";
 
 /* ---------------------------------------------------------------- */
 /*  Ambient background: rising, twinkling bokeh/firefly lights       */
-/*  Rewritten for reliability: no negative delays, no blend-mode     */
-/*  dependency, one motion element per particle with a single        */
-/*  combined keyframe animation.                                     */
 /* ---------------------------------------------------------------- */
 
 function useFireflies(count) {
@@ -16,11 +14,11 @@ function useFireflies(count) {
     () =>
       Array.from({ length: count }).map((_, i) => ({
         id: i,
-        left: Math.random() * 100, // vw %
-        size: 4 + Math.random() * 6, // px
-        duration: 8 + Math.random() * 6, // seconds per full rise
-        delay: Math.random() * 6, // POSITIVE stagger only — 0 to 6s
-        drift: (Math.random() - 0.5) * 50, // px of horizontal wander
+        left: Math.random() * 100,
+        size: 4 + Math.random() * 6,
+        duration: 8 + Math.random() * 6,
+        delay: Math.random() * 6,
+        drift: (Math.random() - 0.5) * 50,
       })),
     [count]
   );
@@ -70,6 +68,35 @@ function FireflyField({ count = 22 }) {
 }
 
 /* ---------------------------------------------------------------- */
+/*  Scroll-down indicator                                            */
+/* ---------------------------------------------------------------- */
+
+function ScrollDownButton({ onClick }) {
+  return (
+    <motion.button
+      type="button"
+      onClick={onClick}
+      aria-label="Scroll to next section"
+      className="absolute bottom-[4vh] left-[45%] z-20 flex -translate-x-1/2 flex-col items-center gap-1"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1, y: [0, 10, 0] }}
+      transition={{
+        opacity: { delay: 1.4, duration: 0.6 },
+        y: { delay: 1.4, duration: 1.6, repeat: Infinity, ease: "easeInOut" },
+      }}
+    >
+      <span
+        className="eyebrow text-[10px] tracking-[0.2em] text-[#a72743]"
+        style={{ fontFamily: "var(--font-label)" }}
+      >
+        Scroll
+      </span>
+      <ChevronDown size={22} className="text-[#a72743]" strokeWidth={1.75} />
+    </motion.button>
+  );
+}
+
+/* ---------------------------------------------------------------- */
 /*  Hero slide                                                       */
 /* ---------------------------------------------------------------- */
 
@@ -92,13 +119,18 @@ export default function HeroSlide({ scrollContainerRef }) {
     );
   }, []);
 
-  // Parallax the background photo as the snap container scrolls
   const { scrollYProgress } = useScroll({
     container: scrollContainerRef,
     target: slideRef,
     offset: ["start start", "end start"],
   });
   const photoY = useTransform(scrollYProgress, [0, 1], ["0%", "18%"]);
+
+  const scrollToNext = () => {
+    const container = scrollContainerRef?.current;
+    if (!container) return;
+    container.scrollBy({ top: container.clientHeight, behavior: "smooth" });
+  };
 
   return (
     <section ref={slideRef} className="snap-slide relative overflow-hidden">
@@ -125,50 +157,30 @@ export default function HeroSlide({ scrollContainerRef }) {
           className="h-full w-full bg-cover"
           style={{
             backgroundImage: "url('/reception5.png')",
-            backgroundPosition: "center center", 
+            backgroundPosition: "center center",
           }}
         />
       </motion.div>
-      {/* <div
-        className="absolute inset-0"
-        style={{
-          background:
-            "linear-gradient(180deg, rgba(51,37,31,0.55) 0%, rgba(51,37,31,0.05) 35%, rgba(51,37,31,0.15) 70%, rgba(51,37,31,0.75) 100%)",
-        }}
-      /> */}
 
-      {/* <div className="absolute inset-0 bg-black/70" />
-
-<div
-  className="absolute inset-0"
-  style={{
-    background:
-      "linear-gradient(180deg, rgba(0,0,0,0.30) 0%, rgba(0,0,0,0.20) 35%, rgba(0,0,0,0.55) 70%, rgba(0,0,0,0.95) 100%)",
-  }}
-/> */}
-
-      {/* rising firefly/bokeh lights, glowing over the darkened reception photo */}
       <FireflyField />
 
-      <div className="relative z-10 flex h-full min-h-[100dvh] flex-col items-center px-6 text-center text-parchment">
+      <div className="relative z-10 flex h-full  flex-col items-center px-6 text-center text-parchment">
         <p
           className="eyebrow mt-[11vh] text-[#a72743]"
           style={{ fontFamily: "var(--font-label)" }}
         >
-          With joyful heart we invite you to the reception
+          With joyful heart we invite you to the reception of
         </p>
 
-        <div className="w-full">
+        <div className="w-full py-4">
           <h1
             ref={groomRef}
             className="font-display italic leading-none text-[#60241E]"
-            style={{ fontSize: "clamp(52px, 14vw, 72px)" }}
+            style={{ fontSize: "clamp(36px, 14vw, 32px)" }}
           >
-            Turjo
+            Towhidul Islam Khan
           </h1>
           <p className="font-body mt-2 text-[11.5px] leading-snug text-[#a72743]">
-            Towhidul Islam Khan
-            <br />
             Son of Late Md Quayum Khan &amp; Nargis Khan
           </p>
 
@@ -183,15 +195,13 @@ export default function HeroSlide({ scrollContainerRef }) {
           <h1
             ref={brideRef}
             className="font-display italic leading-none text-[#60241E]"
-            style={{ fontSize: "clamp(52px, 14vw, 72px)" }}
+            style={{ fontSize: "clamp(36px, 14vw, 32px)" }}
           >
-            Benazir
+            Syeda Benazir Hossain
           </h1>
           <p className="font-body mt-2 text-[11.5px] leading-snug text-[#a72743]">
-            Syeda Benazir Hossain
-            <br />
-            Daughter of Late Syed Mohammad Azfar
-            Hossain &amp;  Syeda Mocktary Begum 
+            Daughter of Late Syed Mohammad Azfar Hossain &amp; Syeda Mocktary
+            Begum
           </p>
 
           <p className="eyebrow mt-4 text-[#a72743]">
@@ -199,6 +209,8 @@ export default function HeroSlide({ scrollContainerRef }) {
           </p>
         </div>
       </div>
+
+      <ScrollDownButton onClick={scrollToNext} />
     </section>
   );
 }
