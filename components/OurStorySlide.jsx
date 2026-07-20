@@ -3,8 +3,8 @@
 import { useMemo } from "react";
 import { motion } from "framer-motion";
 import { Sparkles } from "lucide-react";
+import ScrollDownButton from "@/components/ScrollDownButton";
 
-// Edit these lines to tell your own story.
 const storyLines = [
   "Every beautiful journey starts with a single step.",
   "Guided by faith, strengthened by love, and surrounded by those we cherish, we begin ours with hope, gratitude, and endless dreams.",
@@ -38,20 +38,16 @@ const word = {
 
 /* ---------------------------------------------------------------- */
 /*  Ambient background: wandering dust motes + soft glimmer pulses   */
-/*  Slow, organic, multi-point drift — not a straight fall or rise.  */
-/*  Meant to feel like sunlit dust in an old storybook, not confetti */
-/*  or fireflies.                                                    */
 /* ---------------------------------------------------------------- */
 
 function useDustMotes(count) {
   return useMemo(
     () =>
       Array.from({ length: count }).map((_, i) => {
-        // build a loose 4-point wander path per mote, in px offsets
         const wander = () => (Math.random() - 0.5) * 90;
         return {
           id: i,
-          left: 8 + Math.random() * 84, // keep away from hard edges
+          left: 8 + Math.random() * 84,
           top: 10 + Math.random() * 80,
           size: 2 + Math.random() * 3.5,
           duration: 16 + Math.random() * 14,
@@ -152,7 +148,13 @@ function StoryAmbience() {
 /*  Our Story slide                                                  */
 /* ---------------------------------------------------------------- */
 
-export default function OurStorySlide() {
+export default function OurStorySlide({ scrollContainerRef }) {
+  const scrollToNext = () => {
+    const container = scrollContainerRef?.current;
+    if (!container) return;
+    container.scrollBy({ top: container.clientHeight, behavior: "smooth" });
+  };
+
   return (
     <section className="snap-slide watermark-bg corner-frame relative flex min-h-[100dvh] flex-col items-center justify-center overflow-hidden bg-parchment px-8 py-16 text-center">
       <StoryAmbience />
@@ -201,6 +203,8 @@ export default function OurStorySlide() {
           </p>
         ))}
       </motion.div>
+
+      <ScrollDownButton onClick={scrollToNext} color="#6E1E2A" />
     </section>
   );
 }

@@ -17,22 +17,12 @@ import SoundToggle from "@/components/SoundToggle";
 
 export default function Home() {
   const [inviteOpen, setInviteOpen] = useState(false);
-  // const [skipEnvelope, setSkipEnvelope] = useState(false);
   const [muted, setMuted] = useState(false);
 
   const scrollRef = useRef(null);
   const sealAudioRef = useRef(null);
   const innerAudioRef = useRef(null);
 
-  // If the guest already opened the invite this session, skip the envelope.
-  // useEffect(() => {
-  //   if (localStorage.getItem("rk-invited") === "true") {
-  //     setSkipEnvelope(true);
-  //     setInviteOpen(true);
-  //   }
-  // }, []);
-
-  // Song 1 — plays on the envelope screen. Started only from a tap (autoplay is blocked otherwise).
   const startSealAudio = () => {
     if (inviteOpen) return;
     const audio = new Audio("/song/wedding1.mpeg");
@@ -42,7 +32,6 @@ export default function Home() {
     sealAudioRef.current = audio;
   };
 
-  // Song 2 — swaps in once the envelope is opened.
   useEffect(() => {
     if (!inviteOpen) return;
 
@@ -75,7 +64,7 @@ export default function Home() {
   return (
     <main className="phone-shell">
       <AnimatePresence>
-      {!inviteOpen && (
+        {!inviteOpen && (
           <EnvelopeIntro
             key="envelope"
             onInteract={startSealAudio}
@@ -88,13 +77,13 @@ export default function Home() {
 
       <div ref={scrollRef} className="main-snap-container">
         <HeroSlide scrollContainerRef={scrollRef} />
-        <OurStorySlide />
-        <CountdownSlide />
-        <EventCards />
+        <OurStorySlide scrollContainerRef={scrollRef} />
+        <CountdownSlide scrollContainerRef={scrollRef} />
+        <EventCards scrollContainerRef={scrollRef} />
         {/* <WeddingPartySlide /> */}
         {/* <StaySlide /> */}
         {/* <RegistrySlide /> */}
-        <RSVPSlide />
+        <RSVPSlide scrollContainerRef={scrollRef} />
         <FinalSlide />
       </div>
     </main>

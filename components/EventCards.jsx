@@ -3,34 +3,9 @@
 import { useMemo } from "react";
 import { motion } from "framer-motion";
 import { CalendarDays, Clock, Leaf, MapPin, Phone, Shirt } from "lucide-react";
+import ScrollDownButton from "@/components/ScrollDownButton";
 
-// Fill this in with your real ceremony details.
 const events = [
-  // {
-  //   name: "Gondhal",
-  //   label: "THE DIVINE BEGINNING",
-  //   nameColor: "#C6A15B",
-  //   date: "15 June 2026",
-  //   time: "9:00 PM",
-  //   venue: "Deshmukh Wada, Pune",
-  //   address: "Traditional",
-  //   desc: "A night of devotional music and dance invoking blessings for the couple's new beginning.",
-  //   mapsUrl: "https://maps.app.goo.gl/example1",
-  //   bg: "/gondhal-bg.jpg",
-  // },
-  // {
-  //   name: "Wedding Ceremony",
-  //   label: "HAPPINESS",
-  //   nameColor: "#5E7A4E",
-  //   date: "24 July 2026",
-  //   time: "7:00 PM",
-  //   venue: "Nikunja Convention Hall",
-  //   address: "73/A, Airport Road, Nikunja 2, Khilkhet, Dhaka, Bangladesh",
-  //   contact: "01322897743",
-  //   desc: "We begin our new journey together through the sacred bond of Nikah, surrounded by the love, prayers, and blessings of those who mean the world to us.",
-  //   mapsUrl: "https://maps.app.goo.gl/nBZHcaYkLFz57nVf7",
-  //   bg: "Wedding.png",
-  // },
   {
     name: "Reception Ceremony",
     label: "THE SACRED VOWS",
@@ -40,30 +15,16 @@ const events = [
     venue: "Celebrity Convention Center",
     address:
       "Level-6), Plot: SE (F) 9, South Avenue, 12 Block - CWS, Dhaka 1212",
-      contact: "01322897743",
+    contact: "01322897743",
     desc: "By the grace of Allah, we have begun our journey together. We would be delighted to have your presence as we celebrate this blessed occasion with family and friends.",
     mapsUrl: "https://maps.app.goo.gl/p6TM4WJejvgNSj9R7",
     bg: "/reception3.jpeg",
     fireworks: true,
   },
-  // {
-  //   name: "Wedding",
-  //   label: "THE SACRED VOWS",
-  //   nameColor: "#6E1E2A",
-  //   date: "24 July 2026",
-  //   time: "9:30 PM",
-  //   venue: "Grand Mandap, Sunset Gardens, Gulsahn",
-  //   address: "Festive Formal",
-  //   desc: "We exchange our vows beneath the mandap, surrounded by everyone who means the world to us.",
-  //   mapsUrl: "https://maps.app.goo.gl/example4",
-  //   bg: "/wedding-bg.jpg",
-  // },
 ];
 
 /* ---------------------------------------------------------------- */
 /*  Ambient background: leaves drifting upward with an S-curve sway  */
-/*  and a slow tumble, tinted per-event so each slide's ambience     */
-/*  matches its own accent color.                                    */
 /* ---------------------------------------------------------------- */
 
 function useLeaves(count) {
@@ -76,7 +37,7 @@ function useLeaves(count) {
           left: Math.random() * 100,
           size: 14 + Math.random() * 16,
           duration: 13 + Math.random() * 10,
-          delay: Math.random() * 8, // positive stagger only
+          delay: Math.random() * 8,
           swayPath: [0, sway, -sway * 0.6, sway * 0.4, 0],
           rotateStart: Math.random() * 360,
           rotateEnd: Math.random() > 0.5 ? 380 : -380,
@@ -132,10 +93,7 @@ function LeafField({ color, count = 14 }) {
 }
 
 /* ---------------------------------------------------------------- */
-/*  Fireworks: a rising spark that bursts into radiating embers,     */
-/*  looped on a per-shell timer so several bursts overlap at         */
-/*  staggered moments across the sky, tinted with the event's        */
-/*  accent color plus a couple of warm complementary tones.          */
+/*  Fireworks                                                        */
 /* ---------------------------------------------------------------- */
 
 function useFireworks(count) {
@@ -151,7 +109,7 @@ function useFireworks(count) {
         return {
           id: i,
           left: 10 + Math.random() * 80,
-          topTarget: 12 + Math.random() * 30, // % from top of the slide
+          topTarget: 12 + Math.random() * 30,
           delay: Math.random() * loopPeriod,
           riseDuration,
           explosionDuration,
@@ -177,7 +135,6 @@ function FireworkBurst({ f, colors }) {
 
   return (
     <>
-      {/* rising spark trail */}
       <motion.div
         className="absolute h-[3px] w-[3px] rounded-full"
         style={{
@@ -200,7 +157,6 @@ function FireworkBurst({ f, colors }) {
         }}
       />
 
-      {/* burst particles */}
       {f.particles.map((p) => (
         <motion.div
           key={p.id}
@@ -254,7 +210,13 @@ function Fireworks({ accentColor, count = 4 }) {
 /*  Event slide                                                      */
 /* ---------------------------------------------------------------- */
 
-function EventSlide({ event, index }) {
+function EventSlide({ event, index, scrollContainerRef }) {
+  const scrollToNext = () => {
+    const container = scrollContainerRef?.current;
+    if (!container) return;
+    container.scrollBy({ top: container.clientHeight, behavior: "smooth" });
+  };
+
   return (
     <section className="snap-slide relative flex min-h-[100dvh] flex-col justify-end overflow-hidden">
       <div
@@ -275,7 +237,6 @@ function EventSlide({ event, index }) {
         }}
       />
 
-      {/* ambient effect: fireworks for the reception, drifting leaves otherwise */}
       {event.fireworks ? (
         <Fireworks accentColor={event.nameColor} />
       ) : (
@@ -336,15 +297,26 @@ function EventSlide({ event, index }) {
           Open in Google Maps
         </a>
       </motion.div>
+
+      <ScrollDownButton
+        onClick={scrollToNext}
+        color={event.nameColor}
+        label="Scroll"
+      />
     </section>
   );
 }
 
-export default function EventCards() {
+export default function EventCards({ scrollContainerRef }) {
   return (
     <>
       {events.map((event, i) => (
-        <EventSlide key={event.name} event={event} index={i} />
+        <EventSlide
+          key={event.name}
+          event={event}
+          index={i}
+          scrollContainerRef={scrollContainerRef}
+        />
       ))}
     </>
   );

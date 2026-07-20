@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { motion } from "framer-motion";
-
+import ScrollDownButton from "@/components/ScrollDownButton";
 
 const TARGET = new Date("2026-07-25T19:00:00+06:00"); // Bangladesh Standard Time (UTC+6)
 
@@ -24,11 +24,9 @@ function Unit({ value, label }) {
 
 /* ---------------------------------------------------------------- */
 /*  Ambient background: a slow clock-ring with orbiting particles    */
-/*  and a sweeping pulse of tick marks — circular, time-themed        */
-/*  motion, distinct from the linear/wander backgrounds elsewhere.    */
 /* ---------------------------------------------------------------- */
 
-const CLOCK_SIZE = 340; // px, the square field everything is positioned within
+const CLOCK_SIZE = 340;
 const CENTER = CLOCK_SIZE / 2;
 const RING_RADIUS = CENTER - 6;
 
@@ -81,7 +79,7 @@ function TickMarks() {
           id: i,
           x: CENTER + RING_RADIUS * Math.cos(angle),
           y: CENTER + RING_RADIUS * Math.sin(angle),
-          delay: (i / 12) * 6, // even spacing across one full sweep
+          delay: (i / 12) * 6,
         };
       }),
     []
@@ -124,14 +122,12 @@ function ClockAmbience() {
         className="relative"
         style={{ width: CLOCK_SIZE, height: CLOCK_SIZE }}
       >
-        {/* slow-rotating faint clock ring */}
         <motion.div
           className="absolute inset-0 rounded-full"
           style={{ border: "1px solid rgba(198,161,91,0.28)" }}
           animate={{ rotate: 360 }}
           transition={{ duration: 90, repeat: Infinity, ease: "linear" }}
         />
-        {/* a second, inner ring rotating the opposite way for depth */}
         <motion.div
           className="absolute rounded-full"
           style={{
@@ -156,7 +152,7 @@ function ClockAmbience() {
 /*  Countdown slide                                                  */
 /* ---------------------------------------------------------------- */
 
-export default function CountdownSlide() {
+export default function CountdownSlide({ scrollContainerRef }) {
   const [time, setTime] = useState({ days: 0, hours: 0, mins: 0, secs: 0 });
 
   useEffect(() => {
@@ -173,6 +169,12 @@ export default function CountdownSlide() {
     const id = setInterval(tick, 1000);
     return () => clearInterval(id);
   }, []);
+
+  const scrollToNext = () => {
+    const container = scrollContainerRef?.current;
+    if (!container) return;
+    container.scrollBy({ top: container.clientHeight, behavior: "smooth" });
+  };
 
   return (
     <section className="snap-slide watermark-bg corner-frame relative flex min-h-[100dvh] flex-col items-center justify-center overflow-hidden bg-parchment px-6 text-center">
@@ -201,8 +203,10 @@ export default function CountdownSlide() {
       </motion.div>
 
       <p className="font-body relative z-10 mt-10 max-w-[260px] text-sm leading-relaxed text-ink/70">
-        25th July 2026 &middot; 7:00 PM 
+        25th July 2026 &middot; 7:00 PM
       </p>
+
+      <ScrollDownButton onClick={scrollToNext} color="#6E1E2A" />
     </section>
   );
 }

@@ -3,12 +3,11 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { Check, Loader2 } from "lucide-react";
+import ScrollDownButton from "@/components/ScrollDownButton";
 
-// Set this after deploying the Apps Script (see README "RSVP → Google Sheet" section).
-// Example: https://script.google.com/macros/s/AKfycb.../exec
 const RSVP_ENDPOINT = process.env.NEXT_PUBLIC_RSVP_ENDPOINT || "";
 
-export default function RSVPSlide() {
+export default function RSVPSlide({ scrollContainerRef }) {
   const [form, setForm] = useState({
     attending: "yes",
     name: "",
@@ -17,24 +16,31 @@ export default function RSVPSlide() {
     dietary: "",
     message: "",
   });
-  const [status, setStatus] = useState("idle"); // idle | submitting | success | error
+  const [status, setStatus] = useState("idle");
 
-  const update = (key) => (e) => setForm((f) => ({ ...f, [key]: e.target.value }));
+  const update = (key) => (e) =>
+    setForm((f) => ({ ...f, [key]: e.target.value }));
+
+  const scrollToNext = () => {
+    const container = scrollContainerRef?.current;
+    if (!container) return;
+    container.scrollBy({ top: container.clientHeight, behavior: "smooth" });
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!form.name.trim()) return;
 
     if (!RSVP_ENDPOINT) {
-      // No endpoint configured yet — tell the developer, not the guest.
-      console.warn("NEXT_PUBLIC_RSVP_ENDPOINT is not set. See README for setup.");
+      console.warn(
+        "NEXT_PUBLIC_RSVP_ENDPOINT is not set. See README for setup."
+      );
       setStatus("success");
       return;
     }
 
     setStatus("submitting");
     try {
-      // text/plain avoids a CORS preflight, which Apps Script web apps don't handle.
       await fetch(RSVP_ENDPOINT, {
         method: "POST",
         headers: { "Content-Type": "text/plain;charset=utf-8" },
@@ -49,7 +55,7 @@ export default function RSVPSlide() {
 
   if (status === "success") {
     return (
-      <section className="snap-slide watermark-bg flex min-h-[100dvh] flex-col items-center justify-center bg-parchment px-7 text-center">
+      <section className="snap-slide watermark-bg relative flex min-h-[100dvh] flex-col items-center justify-center bg-parchment px-7 text-center">
         <motion.div
           initial={{ scale: 0.7, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
@@ -59,23 +65,30 @@ export default function RSVPSlide() {
         >
           <Check color="#E4CFA0" size={26} />
         </motion.div>
-        <h2 className="font-display italic mt-6 text-3xl text-wine">Thank You</h2>
+        <h2 className="font-display italic mt-6 text-3xl text-wine">
+          Thank You
+        </h2>
         <p className="font-body mt-2 max-w-[240px] text-[13px] text-ink/65">
           {form.attending === "yes"
             ? "We can't wait to celebrate with you."
             : "You'll be missed — thank you for letting us know."}
         </p>
+
+        <ScrollDownButton onClick={scrollToNext} color="#6E1E2A" />
       </section>
     );
   }
 
   return (
-    <section className="snap-slide watermark-bg corner-frame flex min-h-[100dvh] flex-col items-center justify-center bg-parchment px-7 py-16 text-center">
+    <section className="snap-slide watermark-bg corner-frame relative flex min-h-[100dvh] flex-col items-center justify-center bg-parchment px-7 py-16 text-center">
       <p className="eyebrow text-wine/60">Kindly Respond By 23 July 2026</p>
       <h2 className="font-display italic mt-2 text-4xl text-wine">RSVP</h2>
       <div className="gold-rule" />
 
-      <form onSubmit={handleSubmit} className="mt-4 w-full max-w-[300px] space-y-4 text-left">
+      <form
+        onSubmit={handleSubmit}
+        className="mt-4 w-full max-w-[300px] space-y-4 text-left"
+      >
         <div>
           <label className="eyebrow text-ink/60" style={{ fontSize: "10px" }}>
             Will you attend? *
@@ -142,8 +155,10 @@ export default function RSVPSlide() {
               onChange={update("guests")}
               className="font-body mt-1.5 w-full rounded-lg border border-gold/40 bg-white/70 px-3 py-2.5 text-[13px] outline-none focus:border-wine"
             >
-              {[1, 2, 3, 4,5,6].map((n) => (
-                <option key={n} value={n}>{n}</option>
+              {[1, 2, 3, 4, 5, 6].map((n) => (
+                <option key={n} value={n}>
+                  {n}
+                </option>
               ))}
             </select>
           </div>
@@ -195,6 +210,8 @@ export default function RSVPSlide() {
           </p>
         )}
       </form>
+
+      <ScrollDownButton onClick={scrollToNext} color="#6E1E2A" delay={0.4} />
     </section>
   );
 }
