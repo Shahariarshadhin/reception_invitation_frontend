@@ -248,13 +248,13 @@ function EventSlide({ event, index, scrollContainerRef }) {
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, amount: 0.4 }}
         transition={{ duration: 0.7, ease: "easeOut" }}
-        className="relative z-10 px-6 pb-14 pt-24 text-parchment"
+        className="relative z-10 px-6 pb-24 pt-20 text-parchment"
       >
         <p className="eyebrow" style={{ color: event.nameColor }}>
           {String(index + 1).padStart(2, "0")} &mdash; {event.label}
         </p>
         <h2 className="font-display italic mt-1 text-5xl">{event.name}</h2>
-        <p className="font-body mt-4 max-w-[300px] text-[14px] leading-relaxed text-parchment/85">
+        <p className="font-body mt-2 max-w-[300px] text-[14px] leading-relaxed text-parchment/85">
           {event.desc}
         </p>
 
@@ -263,7 +263,7 @@ function EventSlide({ event, index, scrollContainerRef }) {
           style={{ background: "linear-gradient(90deg, #C6A15B, transparent)" }}
         />
 
-        <div className="mt-2 space-y-3 text-[13.5px] text-parchment/90">
+        <div className="mt-2 space-y-2 text-[13.5px] text-parchment/90">
           <div className="flex items-center gap-3">
             <CalendarDays size={16} color={event.nameColor} />
             <span>{event.date}</span>

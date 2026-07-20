@@ -87,7 +87,7 @@ export default function RSVPSlide({ scrollContainerRef }) {
 
       <form
         onSubmit={handleSubmit}
-        className="mt-4 w-full max-w-[300px] space-y-4 text-left"
+        className="mt-4 w-full max-w-[300px] space-y-2 text-left"
       >
         <div>
           <label className="eyebrow text-ink/60" style={{ fontSize: "10px" }}>
